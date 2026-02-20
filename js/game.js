@@ -25,14 +25,20 @@ function renderCharacterCreation() {
   const avatarList = $('#char-avatars');
   if (nameInput) nameInput.value = '';
   if (bgList) {
-    bgList.innerHTML = GAME_DATA.backgrounds.map(b =>
-      `<label class="bg-option"><input type="radio" name="bg" value="${b.id}"> <strong>${b.name}</strong>: ${b.description}</label>`
-    ).join('');
+    const backgrounds = (typeof GAME_DATA !== 'undefined' && GAME_DATA.backgrounds) ? GAME_DATA.backgrounds : [];
+    bgList.innerHTML = backgrounds.length
+      ? backgrounds.map(b =>
+          `<label class="bg-option"><input type="radio" name="bg" value="${b.id}"> <strong>${b.name}</strong>: ${b.description}</label>`
+        ).join('')
+      : '<span class="text-dim">No backgrounds loaded.</span>';
   }
   if (avatarList) {
-    avatarList.innerHTML = GAME_DATA.avatars.map(a =>
-      `<label class="avatar-option"><input type="radio" name="avatar" value="${a.id}"> <span class="avatar-sprite">${a.sprite}</span> ${a.name}</label>`
-    ).join('');
+    const avatars = (typeof GAME_DATA !== 'undefined' && GAME_DATA.avatars) ? GAME_DATA.avatars : [];
+    avatarList.innerHTML = avatars.length
+      ? avatars.map(a =>
+          `<label class="avatar-option"><input type="radio" name="avatar" value="${a.id}"> <span class="avatar-sprite">${a.sprite || '◎'}</span> ${a.name || 'Avatar'}</label>`
+        ).join('')
+      : '<span class="text-dim">No avatars loaded.</span>';
   }
 }
 
@@ -52,7 +58,11 @@ function renderGame() {
   const phase = getNarrativePhase(player);
   const area = getAreaById(player.currentAreaId);
   $('#player-name').textContent = player.name;
-  $('#player-avatar').textContent = player.avatarSprite;
+  const avatarEl = $('#player-avatar');
+  if (avatarEl) {
+    avatarEl.textContent = player.avatarSprite || '◎';
+    avatarEl.setAttribute('aria-label', 'Avatar');
+  }
   $('#player-realm').textContent = `${realm.name} (${realm.stage})`;
   $('#player-hp').textContent = `${player.hp}/${player.hpMax}`;
   $('#player-qi').textContent = `${player.qi}/${player.qiMax}`;
@@ -88,6 +98,19 @@ function renderGame() {
   $('#area-desc').textContent = area ? area.description : '';
   $('#area-danger').textContent = area ? `Danger: ${area.danger} | Qi density: ${area.qiDensity}` : '';
   showPendingMilestone();
+
+  if (typeof IsometricView !== 'undefined') {
+    const isoCanvas = $('#iso-canvas');
+    if (isoCanvas) {
+      const areaNames = {};
+      [player.currentAreaId, ...conns].forEach(id => {
+        const a = getAreaById(id);
+        if (a) areaNames[id] = a.name;
+      });
+      const lockedIds = conns.filter(id => !player.unlockedAreas.includes(id));
+      IsometricView.render(isoCanvas, player.currentAreaId, conns, areaNames, lockedIds, player.avatarSprite || '◎');
+    }
+  }
 
   const questList = $('#quest-list');
   if (questList) {
@@ -236,6 +259,15 @@ function acceptQuest(questId) {
 function init() {
   renderCharacterCreation();
   $('#btn-start').addEventListener('click', startGame);
+  const isoCanvas = $('#iso-canvas');
+  if (isoCanvas && typeof IsometricView !== 'undefined') {
+    IsometricView.setupResize(isoCanvas);
+    isoCanvas.addEventListener('click', e => {
+      if (!player) return;
+      const areaId = IsometricView.getAreaAt(isoCanvas, e.clientX, e.clientY);
+      if (areaId && areaId !== player.currentAreaId) moveToArea(areaId);
+    });
+  }
   $('#game').addEventListener('click', e => {
     const areaBtn = e.target.closest('.area-btn');
     if (areaBtn) moveToArea(areaBtn.dataset.area);
@@ -256,6 +288,10 @@ function init() {
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') $('#quest-panel').classList.remove('active');
+    if (e.key === 'Enter' && $('#character').classList.contains('active')) {
+      e.preventDefault();
+      startGame();
+    }
   });
 }
 
