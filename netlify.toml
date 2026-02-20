@@ -1,0 +1,6 @@
+# Serve from repo root: index.html, css/, js/ all at site root
+[build]
+  publish = "."
+  command = ""
+
+# SPA fallback not needed for single index.html

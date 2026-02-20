@@ -1,5 +1,7 @@
 # Rebirth of the Urban Immortal Cultivator — Open World RPG
 
+**Play online (GitHub Pages):** [thomaswantstobeaskeleton.github.io/Rebirth-Of-The-Urban-Immortal-Cultivator-BETA](https://thomaswantstobeaskeleton.github.io/Rebirth-Of-The-Urban-Immortal-Cultivator-BETA/)
+
 A browser-based open-world RPG set in the **Rebirth of the Urban Immortal Cultivator** (重生之都市修仙) universe. You play as a **newly awakened cultivator** in a modern city—not the original prose protagonist. Choose your name, background, and avatar, then explore a metropolis where spiritual qi, martial sects, ancient relics, and cosmic stakes hide beneath the urban surface.
 
 ## Macro-structure (same as the novel)
@@ -28,7 +30,7 @@ All **cultivation realms**, **techniques**, **factions**, **artifacts**, and **l
 
 ## How to Play
 
-1. **Open the game:** Open `index.html` in a modern browser (Chrome, Firefox, Edge).
+1. **Open the game:** Use the [GitHub Pages link](https://thomaswantstobeaskeleton.github.io/Rebirth-Of-The-Urban-Immortal-Cultivator-BETA/) above, or open `index.html` in a modern browser (Chrome, Firefox, Edge) for local play.
 2. **Character creation:** Enter your name, choose a **background** (Awakened Mortal, Outer Sect Disciple, Spirit Herb Gatherer, Corporate Heir, Street Fighter) and an **avatar**.
 3. **Explore:** You start in Chuzhou Downtown. Use **Connections** to move between areas (downtown, night market, corporate tower, rooftop garden, abandoned subway, qi vein tunnels, sect halls, underground arena).
 4. **Cultivate:** Press **Cultivate** in an area to gain cultivation progress; higher qi density areas give more. Progress fills the bar; when full, you advance to the next realm (Foundation Establishment → Profound Connection → Spirit Sea → Xiantian → …).
