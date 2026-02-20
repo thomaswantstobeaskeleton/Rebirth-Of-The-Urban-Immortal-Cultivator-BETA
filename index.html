@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rebirth of the Urban Immortal Cultivator — Open World RPG</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Rebirth of the Urban Immortal Cultivator</h1>
+    <p class="tagline">Open-world cultivation in a modern city — awaken, cultivate, conquer.</p>
+  </header>
+
+  <main class="main">
+    <!-- CHARACTER CREATION -->
+    <section id="character" class="screen active">
+      <h2>Awaken Your Path</h2>
+      <p class="intro">You are a newly awakened cultivator in a modern metropolis where spiritual qi has returned. The game begins entirely on Earth—urban districts and hidden cultivation zones beneath the surface. Choose your identity. You are not the North Mystic Celestial Lord; you write your own story. Interplanetary travel unlocks only at the appropriate cultivation stage (Nascent Soul); the cosmos is earned.</p>
+      <div class="char-form">
+        <label>Name <input type="text" id="char-name" placeholder="Your name" maxlength="24"></label>
+        <fieldset class="char-section">
+          <legend>Background</legend>
+          <div id="char-backgrounds"></div>
+        </fieldset>
+        <fieldset class="char-section">
+          <legend>Avatar</legend>
+          <div id="char-avatars" class="avatar-grid"></div>
+        </fieldset>
+        <button type="button" id="btn-start" class="btn-primary">Enter the World</button>
+      </div>
+    </section>
+
+    <!-- MAIN GAME -->
+    <section id="game" class="screen">
+      <div class="game-layout">
+        <aside class="panel panel-player">
+          <h3>Character</h3>
+          <div class="player-summary">
+            <span id="player-avatar" class="big-avatar"></span>
+            <span id="player-name"></span>
+            <span id="player-realm" class="realm-label"></span>
+            <span id="player-phase" class="phase-label" title="Narrative phase (Early: urban, Mid: global, Late: leave Earth, Endgame: cosmic)"></span>
+            <span id="player-world" class="world-label" title="Current world layer"></span>
+          </div>
+          <dl class="stats-list">
+            <dt>HP</dt><dd id="player-hp"></dd>
+            <dt>Qi</dt><dd id="player-qi"></dd>
+            <dt>Cultivation</dt><dd id="player-cultivation"></dd>
+            <dt>Spirit Stones</dt><dd id="player-stones"></dd>
+            <dt>Gold</dt><dd id="player-gold"></dd>
+          </dl>
+          <h4>Techniques</h4>
+          <div id="technique-list" class="tech-list"></div>
+          <h4>Inventory</h4>
+          <div id="inventory-list" class="inv-list"></div>
+        </aside>
+        <div class="panel panel-area">
+          <h3>Location: <span id="player-area"></span></h3>
+          <p id="area-desc" class="area-desc"></p>
+          <p id="area-danger" class="area-meta"></p>
+          <h4>Connections</h4>
+          <div id="area-connections" class="area-buttons"></div>
+          <div class="area-actions">
+            <button type="button" id="btn-cultivate" class="btn-action">Cultivate</button>
+            <button type="button" id="btn-explore" class="btn-action">Explore (risk encounter)</button>
+            <button type="button" id="btn-quests" class="btn-action">Quests</button>
+          </div>
+        </div>
+        <aside class="panel panel-quests">
+          <h3>Active Quests</h3>
+          <div id="quest-list" class="quest-list"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- COMBAT -->
+    <section id="combat" class="screen">
+      <div class="combat-layout">
+        <div class="combat-enemy">
+          <h3 id="combat-enemy-name"></h3>
+          <p>HP: <span id="combat-enemy-hp"></span></p>
+        </div>
+        <div class="combat-log" id="combat-log"></div>
+        <div class="combat-player">
+          <p>Your HP: <span id="combat-player-hp"></span> | Qi: <span id="combat-player-qi"></span></p>
+          <h4>Techniques</h4>
+          <div id="combat-techniques" class="combat-techs"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Quest accept panel (overlay) -->
+  <div id="quest-panel" class="overlay-panel">
+    <div class="overlay-content">
+      <h3>Available Quests</h3>
+      <div id="available-quests"></div>
+      <button type="button" class="btn-close" onclick="document.getElementById('quest-panel').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Based on <em>Rebirth of the Urban Immortal Cultivator</em> (重生之都市修仙) by Ten Miles Sword God. Canon from <a href="https://rebirth-of-the-urban-immortal-cultivator.fandom.com/wiki/Rebirth_of_the_Urban_Immortal_Cultivator_Wiki" target="_blank" rel="noopener">RUIC Wiki</a>.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/quests.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
