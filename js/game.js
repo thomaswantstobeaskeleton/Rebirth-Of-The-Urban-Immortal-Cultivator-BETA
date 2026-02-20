@@ -13,6 +13,24 @@ let pendingMilestone = null;
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => el.querySelectorAll(sel);
 
+// Fallbacks so Background/Avatar always show options even if data.js fails or loads late
+const FALLBACK_BACKGROUNDS = [
+  { id: 'mortal_awakened', name: 'Awakened Mortal', description: 'You were an ordinary city dweller until spiritual qi surged and you awakened.', bonus: { qi: 5, hp: 10 } }
+];
+const FALLBACK_AVATARS = [
+  { id: 'male_young', name: 'Young Cultivator', sprite: '◎', description: 'Young cultivator.' }
+];
+
+function getBackgrounds() {
+  if (typeof GAME_DATA !== 'undefined' && GAME_DATA.backgrounds && GAME_DATA.backgrounds.length > 0) return GAME_DATA.backgrounds;
+  return FALLBACK_BACKGROUNDS;
+}
+
+function getAvatars() {
+  if (typeof GAME_DATA !== 'undefined' && GAME_DATA.avatars && GAME_DATA.avatars.length > 0) return GAME_DATA.avatars;
+  return FALLBACK_AVATARS;
+}
+
 function showScreen(screenId) {
   $$('.screen').forEach(s => s.classList.remove('active'));
   const el = $('#' + screenId);
@@ -25,31 +43,46 @@ function renderCharacterCreation() {
   const avatarList = $('#char-avatars');
   if (nameInput) nameInput.value = '';
   if (bgList) {
-    const backgrounds = (typeof GAME_DATA !== 'undefined' && GAME_DATA.backgrounds) ? GAME_DATA.backgrounds : [];
-    bgList.innerHTML = backgrounds.length
-      ? backgrounds.map(b =>
-          `<label class="bg-option"><input type="radio" name="bg" value="${b.id}"> <strong>${b.name}</strong>: ${b.description}</label>`
-        ).join('')
-      : '<span class="text-dim">No backgrounds loaded.</span>';
+    const backgrounds = getBackgrounds();
+    bgList.innerHTML = backgrounds.map(b =>
+      `<label class="bg-option"><input type="radio" name="bg" value="${b.id}"> <strong>${b.name}</strong>: ${b.description}</label>`
+    ).join('');
+    const firstBg = bgList.querySelector('input[name="bg"]');
+    if (firstBg) firstBg.checked = true;
   }
   if (avatarList) {
-    const avatars = (typeof GAME_DATA !== 'undefined' && GAME_DATA.avatars) ? GAME_DATA.avatars : [];
-    avatarList.innerHTML = avatars.length
-      ? avatars.map(a =>
-          `<label class="avatar-option"><input type="radio" name="avatar" value="${a.id}"> <span class="avatar-sprite">${a.sprite || '◎'}</span> ${a.name || 'Avatar'}</label>`
-        ).join('')
-      : '<span class="text-dim">No avatars loaded.</span>';
+    const avatars = getAvatars();
+    avatarList.innerHTML = avatars.map(a =>
+      `<label class="avatar-option"><input type="radio" name="avatar" value="${a.id}"> <span class="avatar-sprite">${a.sprite || '◎'}</span> ${a.name || 'Avatar'}</label>`
+    ).join('');
+    const firstAv = avatarList.querySelector('input[name="avatar"]');
+    if (firstAv) firstAv.checked = true;
   }
 }
 
 function startGame() {
-  const name = ($('#char-name') && $('#char-name').value.trim()) || 'Cultivator';
-  const bgId = ($('input[name="bg"]:checked') && $('input[name="bg"]:checked').value) || 'mortal_awakened';
-  const avatarId = ($('input[name="avatar"]:checked') && $('input[name="avatar"]:checked').value) || 'male_young';
-  player = createNewCharacter({ name, backgroundId: bgId, avatarId });
-  gameState = 'playing';
-  showScreen('game');
-  renderGame();
+  if (typeof GAME_DATA === 'undefined') {
+    console.error('GAME_DATA missing — js/data.js may have failed to load.');
+    alert('Game data failed to load. Check the address (use the site root, not a subfolder) and try again. If it persists, open the browser console (F12) for details.');
+    return;
+  }
+  if (typeof createNewCharacter !== 'function') {
+    console.error('createNewCharacter missing — js/character.js may have failed to load.');
+    alert('Character module failed to load. Check the browser console (F12) for details.');
+    return;
+  }
+  try {
+    const name = ($('#char-name') && $('#char-name').value.trim()) || 'Cultivator';
+    const bgId = ($('input[name="bg"]:checked') && $('input[name="bg"]:checked').value) || 'mortal_awakened';
+    const avatarId = ($('input[name="avatar"]:checked') && $('input[name="avatar"]:checked').value) || 'male_young';
+    player = createNewCharacter({ name, backgroundId: bgId, avatarId });
+    gameState = 'playing';
+    showScreen('game');
+    renderGame();
+  } catch (e) {
+    console.error('startGame error:', e);
+    alert('Could not start game: ' + (e && e.message ? e.message : String(e)) + '. Open the console (F12) for details.');
+  }
 }
 
 function renderGame() {
